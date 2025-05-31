@@ -1,0 +1,81 @@
+{
+    "Resources": {
+        "network": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": "192.168.0.0/16",
+                "EnableDnsHostnames": true,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "from-cf"
+                    }
+                ]
+            }
+        },
+        "web1": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "network"
+                },
+                "CidrBlock": "192.168.0.0/24",
+                "AvailabilityZone": "ap-south-1a",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "web-1"
+                    }
+                ]
+            }
+        },
+        "web2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "network"
+                },
+                "CidrBlock": "192.168.1.0/24",
+                "AvailabilityZone": "ap-south-1b",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "web-2"
+                    }
+                ]
+            }
+        },
+        "db1": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "ap-south-1a",
+                "VpcId": {
+                    "Ref": "network"
+                },
+                "CidrBlock": "192.168.2.0/24",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "db1"
+                    }
+                ]
+            }
+        },
+        "db2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "ap-south-1b",
+                "VpcId": {
+                    "Ref": "network"
+                },
+                "CidrBlock": "192.168.3.0/24",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "db2"
+                    }
+                ]
+            }
+        }
+    }
+}
