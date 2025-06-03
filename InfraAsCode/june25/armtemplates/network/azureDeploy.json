@@ -161,14 +161,52 @@
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses','web-ip')]"
                             }
-                            
+
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id" : "[resourceId('Microsoft.Network/networkSecurityGroups','web')]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups','web')]"
                 }
             }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2024-07-01",
+            "location": "[resourceGroup().location]",
+            "name": "web1server",
+            "properties": {
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces','web-nic')]"
+                        }
+                    ]
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_B1s"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "0001-com-ubuntu-server-jammy",
+                        "sku": "22_04-lts-gen2",
+                        "version": "latest"
+                    }
+                },
+                "osProfile": {
+                    "computerName": "web1server",
+                    "adminUsername": "qtdevops",
+                    "adminPassword": "qtdevops@ADMIN@123"
+                }
+            }
+
         }
     ],
     "outputs": {}
