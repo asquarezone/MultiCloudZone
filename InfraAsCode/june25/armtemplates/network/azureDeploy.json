@@ -1,0 +1,65 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkCidr": {
+            "type": "string",
+            "metadata": {
+                "description": "network cidr"
+            },
+            "defaultValue": "192.168.0.0/16"
+        },
+        "networkName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of network"
+            },
+            "defaultValue": "ntier"
+        },
+        "subnetCidrs": {
+            "type": "array",
+            "metadata": {
+                "description": "subnet cidrs"
+            },
+            "defaultValue": ["192.168.0.0/24","192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+        },
+        "subnetNames": {
+            "type": "array",
+            "metadata": {
+                "description": "subnet Names"
+            },
+            "defaultValue": ["web1", "web2", "db1", "db2"]
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2024-05-01",
+            "name": "[parameters('networkName')]",
+            "location": "[resourceGroup().location]",
+            "properties":{
+                "addressSpace": {
+                    "addressPrefixes": ["[parameters('networkCidr')]"]
+                }
+            }
+        },
+        {
+            "copy": {
+                "count": "[length(parameters('subnetCidrs'))]",
+                "mode": "Serial",
+                "name": "subnets"
+
+            },
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2024-05-01",
+            "name": "[format('{0}/{1}',parameters('networkName'), parameters('subnetNames')[copyIndex()])]",
+            "properties": {
+                "addressPrefix": "[parameters('subnetCidrs')[copyIndex()]]"
+            },
+            "dependsOn": ["[resourceId('Microsoft.Network/virtualNetworks', parameters('networkName'))]"]
+        }
+    ],
+    "outputs": {}
+}

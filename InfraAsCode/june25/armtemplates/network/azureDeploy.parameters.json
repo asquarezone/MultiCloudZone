@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkCidr": {
+            "value": "192.168.0.0/16"
+        },
+        "networkName": {
+            "value": "ntier"
+        },
+        "subnetCidrs": {
+            "value": ["192.168.0.0/24","192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+        },
+        "subnetNames": {
+            "value": ["web1", "web2", "db1", "db2"]
+        }
+    }
+}
