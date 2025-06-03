@@ -9,10 +9,38 @@
             "value": "ntier"
         },
         "subnetCidrs": {
-            "value": ["192.168.0.0/24","192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+            "value": [ "192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24" ]
         },
         "subnetNames": {
-            "value": ["web1", "web2", "db1", "db2"]
+            "value": [ "web1", "web2", "db1", "db2" ]
+        },
+        "webrules": {
+            "value": [
+                {
+                    "name": "rule1",
+                    "description": "open 80 port",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "80",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 1000,
+                    "direction": "Inbound"
+                },
+                {
+                    "name": "rule2",
+                    "description": "open 22 port",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "22",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 1010,
+                    "direction": "Inbound"
+                }
+            ]
         }
     }
 }

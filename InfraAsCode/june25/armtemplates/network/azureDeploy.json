@@ -21,14 +21,46 @@
             "metadata": {
                 "description": "subnet cidrs"
             },
-            "defaultValue": ["192.168.0.0/24","192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+            "defaultValue": [ "192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24" ]
         },
         "subnetNames": {
             "type": "array",
             "metadata": {
                 "description": "subnet Names"
             },
-            "defaultValue": ["web1", "web2", "db1", "db2"]
+            "defaultValue": [ "web1", "web2", "db1", "db2" ]
+        },
+        "webrules": {
+            "type": "array",
+            "metadata": {
+                "description": "description"
+            },
+            "defaultValue": [
+                {
+                    "name": "rule1",
+                    "description": "open 80 port",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "80",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 1000,
+                    "direction": "Inbound"
+                },
+                {
+                    "name": "rule2",
+                    "description": "open 22 port",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "22",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 1010,
+                    "direction": "Inbound"
+                }
+            ]
         }
     },
     "functions": [],
@@ -39,9 +71,9 @@
             "apiVersion": "2024-05-01",
             "name": "[parameters('networkName')]",
             "location": "[resourceGroup().location]",
-            "properties":{
+            "properties": {
                 "addressSpace": {
-                    "addressPrefixes": ["[parameters('networkCidr')]"]
+                    "addressPrefixes": [ "[parameters('networkCidr')]" ]
                 }
             }
         },
@@ -58,7 +90,38 @@
             "properties": {
                 "addressPrefix": "[parameters('subnetCidrs')[copyIndex()]]"
             },
-            "dependsOn": ["[resourceId('Microsoft.Network/virtualNetworks', parameters('networkName'))]"]
+            "dependsOn": [ "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkName'))]" ]
+        },
+        {
+            "name": "web",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2024-05-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+
+            }
+        },
+        {
+            "copy": {
+                "count": "[length(parameters('webrules'))]",
+                "mode": "Serial",
+                "name": "webnsgrules"
+
+            },
+            "name": "[format('{0}/{1}','web',parameters('webrules')[copyIndex()].name)]",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2024-05-01",
+            "properties": {
+                "description": "[parameters('webrules')[copyIndex()].description]",
+                "protocol": "[parameters('webrules')[copyIndex()].protocol]",
+                "sourcePortRange": "[parameters('webrules')[copyIndex()].sourcePortRange]",
+                "destinationPortRange": "[parameters('webrules')[copyIndex()].destinationPortRange]",
+                "sourceAddressPrefix": "[parameters('webrules')[copyIndex()].sourceAddressPrefix]",
+                "destinationAddressPrefix": "[parameters('webrules')[copyIndex()].destinationAddressPrefix]",
+                "access": "[parameters('webrules')[copyIndex()].access]",
+                "priority": "[parameters('webrules')[copyIndex()].priority]",
+                "direction": "[parameters('webrules')[copyIndex()].direction]"
+            }
         }
     ],
     "outputs": {}
