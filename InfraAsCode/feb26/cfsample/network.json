@@ -1,0 +1,44 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "cidr": {
+            "Description": "This is cidr for network",
+            "Type": "String",
+            "Default": "10.0.0.0/16"
+        },
+        "networkName": {
+            "Description": "Name of the network",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "mynetwork": {
+            "Description": "This is network",
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": {
+                    "Ref": "cidr"
+                },
+                "EnableDnsHostnames": true,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "networkName"
+                        }
+                    }
+                ]
+            }
+        },
+        "web": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-west-2a",
+                "VpcId": {
+                    "Ref": "mynetwork"
+                },
+                "CidrBlock": "10.10.0.0/24"
+            }
+        }
+    }
+}
